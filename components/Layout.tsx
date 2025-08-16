@@ -6,7 +6,7 @@ import ImportSeedPhraseModal from './ImportSeedPhraseModal';
 import WalletConnectQRModal from './WalletConnectQRModal';
 import NotificationPanel from './NotificationPanel';
 import ValifiCoPilot from './ValifiCoPilot';
-import type { ViewType, Notification, UserActivity, NewsItem, UserSettings, Theme, Portfolio } from '../types';
+import type { ViewType, Notification, UserActivity, NewsItem, UserSettings, Portfolio } from '../types';
 import * as apiService from '../services/api';
 
 

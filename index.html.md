@@ -1,3 +1,5 @@
+
+```html
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
   <head>
@@ -101,47 +103,110 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+      /* Light Theme (default) */
       :root {
-        --background: 13 17 23;      /* #0D1117 */
-        --foreground: 230 237 243;   /* #E6EDF3 */
+        --background: 248 250 252; /* slate-50 */
+        --foreground: 15 23 42;    /* slate-900 */
         
-        --card: 22 27 34;         /* #161B22 */
-        --card-foreground: 230 237 243;
+        --card: 255 255 255;       /* white */
+        --card-foreground: 15 23 42;
 
-        --popover: 22 27 34;
-        --popover-foreground: 230 237 243;
+        --popover: 255 255 255;
+        --popover-foreground: 15 23 42;
 
-        --primary: 56 139 253;     /* #388BFD */
+        --primary: 79 70 229;      /* indigo-600 */
         --primary-foreground: 255 255 255;
         
-        --secondary: 33 38 45;      /* #21262D */
-        --secondary-foreground: 230 237 243;
+        --secondary: 241 245 249;   /* slate-100 */
+        --secondary-foreground: 15 23 42;
 
-        --muted: 33 38 45;
-        --muted-foreground: 139 148 158; /* #8B949E */
+        --muted: 241 245 249;
+        --muted-foreground: 100 116 139; /* slate-500 */
 
-        --accent: 45 51 59;           /* #2D333B */
-        --accent-foreground: 230 237 243;
+        --accent: 241 245 249;
+        --accent-foreground: 15 23 42;
 
-        --destructive: 248 81 73;    /* #F85149 */
+        --destructive: 220 38 38; /* red-600 */
         --destructive-foreground: 255 255 255;
         
-        --success: 35 134 54;        /* #238636 */
+        --success: 22 163 74; /* green-600 */
         --success-foreground: 255 255 255;
         
-        --warning: 245 158 11;       /* amber-500 */
+        --warning: 245 158 11; /* amber-500 */
         --warning-foreground: 255 255 255;
 
-        --border: 48 54 61;          /* #30363D */
-        --input: 13 17 23;
-        --ring: 56 139 253;
+        --border: 226 232 240; /* slate-200 */
+        --input: 226 232 240;
+        --ring: 79 70 229;
+      }
+
+      /* Dark Theme */
+      [data-theme='dark'] {
+        --background: 2 6 23;      /* slate-950 */
+        --foreground: 226 232 240; /* slate-200 */
+
+        --card: 15 23 42;         /* slate-900 */
+        --card-foreground: 226 232 240;
+
+        --popover: 2 6 23;
+        --popover-foreground: 226 232 240;
+
+        --primary: 99 102 241;     /* indigo-500 */
+        --primary-foreground: 15 23 42;
+
+        --secondary: 30 41 59;    /* slate-800 */
+        --secondary-foreground: 248 250 252; /* slate-50 */
+
+        --muted: 30 41 59;
+        --muted-foreground: 148 163 184; /* slate-400 */
+
+        --accent: 30 41 59;
+        --accent-foreground: 248 250 252;
+
+        --destructive: 127 29 29; /* red-900 */
+        --destructive-foreground: 248 250 252;
+        
+        --success: 21 128 61; /* green-700 */
+        --success-foreground: 248 250 252;
+        
+        --warning: 217 119 6; /* amber-600 */
+        --warning-foreground: 255 255 255;
+
+        --border: 30 41 59;
+        --input: 30 41 59;
+        --ring: 99 102 241;
+      }
+      
+      /* Midnight (AMOLED) Theme */
+      [data-theme='midnight'] {
+        --background: 0 0 0;
+        --foreground: 226 232 240;
+        --card: 15 23 42;
+        --card-foreground: 226 232 240;
+        --popover: 5 11 28;
+        --popover-foreground: 226 232 240;
+        --primary: 129 140 248; /* indigo-400 */
+        --primary-foreground: 255 255 255;
+        --secondary: 23 37 64; /* slate-800 adjusted */
+        --secondary-foreground: 248 250 252;
+        --muted: 23 37 64;
+        --muted-foreground: 148 163 184;
+        --accent: 23 37 64;
+        --accent-foreground: 248 250 252;
+        --border: 30 41 59;
+        --input: 23 37 64;
+        --ring: 129 140 248;
       }
       
       body {
         font-family: 'Inter', sans-serif;
         background-color: rgb(var(--background));
         color: rgb(var(--foreground));
-        background-image:
+      }
+
+      [data-theme='dark'] body,
+      [data-theme='midnight'] body {
+         background-image:
           radial-gradient(circle at 15% 20%, hsla(220, 89%, 61%, 0.1) 0px, transparent 40%),
           radial-gradient(circle at 85% 80%, hsla(245, 89%, 61%, 0.1) 0px, transparent 40%);
         background-size: 150% 150%;
@@ -149,9 +214,15 @@
 
       /* Custom Scrollbars */
       ::-webkit-scrollbar { width: 8px; height: 8px; }
-      ::-webkit-scrollbar-track { background: transparent; }
-      ::-webkit-scrollbar-thumb { background: rgb(var(--accent)); border-radius: 4px; }
-      ::-webkit-scrollbar-thumb:hover { background: rgb(var(--muted-foreground)); }
+      [data-theme='dark'] ::-webkit-scrollbar-track,
+      [data-theme='midnight'] ::-webkit-scrollbar-track { background: transparent; }
+      [data-theme='dark'] ::-webkit-scrollbar-thumb,
+      [data-theme='midnight'] ::-webkit-scrollbar-thumb { background: rgb(var(--accent)); border-radius: 4px; }
+      [data-theme='dark'] ::-webkit-scrollbar-thumb:hover,
+      [data-theme='midnight'] ::-webkit-scrollbar-thumb:hover { background: rgb(var(--muted-foreground)); }
+      [data-theme='light'] ::-webkit-scrollbar-track { background: rgb(var(--border)); }
+      [data-theme='light'] ::-webkit-scrollbar-thumb { background: rgb(var(--muted-foreground)); border-radius: 4px; }
+      [data-theme='light'] ::-webkit-scrollbar-thumb:hover { background: rgb(var(--foreground) / 0.5); }
 
       /* General Transitions */
       *, *::before, *::after {
@@ -167,12 +238,18 @@
       .balance-privacy .blur-balance:hover,
       .balance-privacy .blur-balance:focus-within { filter: none; }
       
+      .text-emerald-400 { color: rgb(var(--success)); }
+      [data-theme='light'] .text-emerald-400 { color: rgb(22 163 74); } /* green-600 */
+      
+      .text-red-400 { color: rgb(var(--destructive)); }
+      [data-theme='light'] .text-red-400 { color: rgb(220 38 38); } /* red-600 */
+
+      .text-amber-400 { color: rgb(var(--warning)); }
+      [data-theme='light'] .text-amber-400 { color: rgb(245 158 11); } /* amber-500 */
+      
       /* ProseMirror/Markdown rendering from AI */
       .prose { color: rgb(var(--card-foreground)); }
       .prose strong { color: rgb(var(--card-foreground)); font-weight: 600; }
-      .prose-invert { color: rgb(var(--foreground)); }
-      .prose-invert strong { color: rgb(var(--foreground)); }
-      .prose-invert a { color: rgb(var(--primary)); }
       
       /* Sidebar Tooltip */
       .group:hover .group-hover-tooltip {
@@ -196,10 +273,17 @@
 
       /* Sidebar Glass Effect */
       .sidebar-glass {
-        background-color: rgb(var(--card) / 0.75);
+        background-color: rgb(var(--card) / 0.6);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
-        border-right-color: rgb(255 255 255 / 0.1);
+      }
+      [data-theme='dark'] .sidebar-glass, [data-theme='midnight'] .sidebar-glass {
+          background-color: rgb(var(--card) / 0.75);
+          border-right-color: rgb(255 255 255 / 0.1);
+      }
+      [data-theme='light'] .sidebar-glass {
+          background-color: rgb(255 255 255 / 0.6);
+          border-right-color: rgb(0 0 0 / 0.07);
       }
 
       /* Mobile Bottom Nav */
@@ -236,71 +320,35 @@
       .testimonial-slider:hover {
           animation-play-state: paused;
       }
-      /* 3D Card Effect */
-      .card-3d-wrapper {
-        perspective: 1000px;
-      }
-      .card-3d {
-        transform-style: preserve-3d;
-        transition: transform 0.5s;
-      }
-      .card-3d:hover {
-        transform: rotateY(5deg) rotateX(2deg) scale(1.02);
-      }
-      .card-theme-obsidian {
-        background: linear-gradient(135deg, #1f2937, #0f172a);
-      }
-      .card-theme-holographic {
-        background: linear-gradient(135deg, #a7b3c2, #e0e6f0);
-        position: relative;
-        overflow: hidden;
-      }
-      .card-theme-holographic::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: linear-gradient(135deg, rgba(255,0,255,0.3), rgba(0,255,255,0.3), rgba(255,255,0,0.3));
-        animation: holographic-shine 8s linear infinite;
-      }
-      .card-theme-minimal {
-        background: #f8fafc;
-      }
-      @keyframes holographic-shine {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-      }
     </style>
-<script type="importmap">
+  <script type="importmap">
 {
   "imports": {
     "react": "https://esm.sh/react@^19.1.1",
     "react-dom/": "https://esm.sh/react-dom@^19.1.1/",
-    "react-i18next": "https://esm.sh/react-i18next@^15.6.1",
     "react/": "https://esm.sh/react@^19.1.1/",
-    "otpauth": "https://esm.sh/otpauth@^9.4.1",
-    "qrcode": "https://esm.sh/qrcode@^1.5.4",
-    "i18next": "https://esm.sh/i18next@^25.3.6",
-    "i18next-browser-languagedetector": "https://esm.sh/i18next-browser-languagedetector@^8.2.0",
-    "express": "https://esm.sh/express@^5.1.0",
-    "cors": "https://esm.sh/cors@^2.8.5",
+    "@google/genai": "https://esm.sh/@google/genai",
+    "otpauth": "https://esm.sh/otpauth@^9.2.2",
+    "qrcode": "https://esm.sh/qrcode@^1.5.3",
+    "i18next": "https://esm.sh/i18next@23.11.5",
+    "react-i18next": "https://esm.sh/react-i18next@14.1.2",
+    "i18next-browser-languagedetector": "https://esm.sh/i18next-browser-languagedetector@8.0.0",
     "dotenv": "https://esm.sh/dotenv@^17.2.1",
     "crypto": "https://esm.sh/crypto@^1.0.1",
-    "@google/genai": "https://esm.sh/@google/genai@^1.14.0",
     "@libsql/client": "https://esm.sh/@libsql/client@^0.15.11",
     "dotenv/": "https://esm.sh/dotenv@^17.2.1/",
     "fs/": "https://esm.sh/fs@^0.0.1-security/",
     "path": "https://esm.sh/path@^0.12.7",
-    "url": "https://esm.sh/url@^0.11.4"
+    "url": "https://esm.sh/url@^0.11.4",
+    "express": "https://esm.sh/express@^5.1.0",
+    "cors": "https://esm.sh/cors@^2.8.5"
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
 </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>
 </html>
+```

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { NavItem, ViewType, UserSettings, Language, Theme } from '../types';
+import type { NavItem, ViewType, UserSettings, Language } from '../types';
 import { ValifiLogo, DashboardIcon, InvestmentsIcon, WalletIcon, BankIcon, PrivacyIcon, TaxIcon, ReferralsIcon, SettingsIcon, LogoutIcon, ExchangeIcon, P2PIcon, UserCheckIcon, InternalTransferIcon, CardIcon, LoanIcon, NftIcon, SearchIcon, PlusCircleIcon, ChevronDownIcon, GlobeIcon, PaletteIcon, NotificationIcon, MenuIcon, ChevronsLeftIcon, ChevronsRightIcon, CodeIcon } from './icons';
 import { languageList } from '../i18n';
 
@@ -241,9 +241,6 @@ const BottomSection: React.FC<SidebarProps & { onToggleCollapse: () => void }> =
     const isCollapsed = userSettings.settings.preferences.sidebarCollapsed ?? false;
     const { t, i18n } = useTranslation(['sidebar', 'common', 'settings']);
 
-    const handleThemeChange = (theme: Theme) => {
-        setUserSettings(s => ({ ...s, settings: { ...s.settings, preferences: { ...s.settings.preferences, theme } } }));
-    };
     const handleLanguageChange = (lang: Language) => {
         i18n.changeLanguage(lang);
         setUserSettings(s => ({ ...s, settings: { ...s.settings, preferences: { ...s.settings.preferences, language: lang } } }));
@@ -260,54 +257,12 @@ const BottomSection: React.FC<SidebarProps & { onToggleCollapse: () => void }> =
             </div>
             <div className="flex items-center justify-around">
                 <BottomIcon icon={NotificationIcon} badgeCount={unreadNotifications} onClick={onNotificationsClick} isCollapsed={isCollapsed} tooltip={t('notifications', { ns: 'header' })} />
-                <PopoverMenu icon={PaletteIcon} isCollapsed={isCollapsed} tooltip={t('change_theme', { ns: 'landing' })}>
-                    <div className="p-1">
-                        {(['light', 'dark', 'midnight', 'system'] as const).map(theme => (
-                            <button key={theme} onClick={() => handleThemeChange(theme)} className={`w-full text-left px-3 py-1.5 text-sm font-semibold rounded-md capitalize transition-colors ${userSettings.settings.preferences.theme === theme ? 'bg-primary text-white' : 'hover:bg-accent'}`}>{t(`theme_${theme}` as any, { ns: 'settings' })}</button>
-                        ))}
-                    </div>
-                </PopoverMenu>
-                 <PopoverMenu icon={GlobeIcon} isCollapsed={isCollapsed} tooltip={t('change_language', { ns: 'landing' })}>
-                    <div className="p-1 max-h-48 overflow-y-auto">
-                        {languageList.map(lang => (
-                            <button key={lang.code} onClick={() => handleLanguageChange(lang.code)} className={`w-full text-left px-3 py-1.5 text-sm font-semibold rounded-md transition-colors ${i18n.language === lang.code ? 'bg-primary text-white' : 'hover:bg-accent'}`}>{lang.name}</button>
-                        ))}
-                    </div>
-                </PopoverMenu>
+                <BottomIcon icon={SettingsIcon} onClick={() => setCurrentView('settings')} isCollapsed={isCollapsed} tooltip={t('settings')} />
                 <BottomIcon icon={isCollapsed ? ChevronsRightIcon : ChevronsLeftIcon} onClick={onToggleCollapse} isCollapsed={isCollapsed} tooltip={isCollapsed ? t('expand') : t('collapse')} />
             </div>
         </div>
     );
 };
-
-const PopoverMenu: React.FC<{icon: React.FC<any>, isCollapsed: boolean, tooltip: string, children: React.ReactNode}> = ({ icon: Icon, isCollapsed, tooltip, children }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const ref = useRef<HTMLDivElement>(null);
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (ref.current && !ref.current.contains(event.target as Node)) setIsOpen(false);
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
-
-    return (
-        <div className="relative group" ref={ref}>
-            <button onClick={() => setIsOpen(p=>!p)} className="p-2.5 rounded-xl text-muted-foreground hover:bg-accent hover:text-foreground transition-colors relative">
-                <Icon className="w-5 h-5"/>
-            </button>
-            <span className={`absolute ${isCollapsed ? 'left-full ml-4' : 'bottom-full mb-2 left-1/2 -translate-x-1/2'} w-auto p-2 min-w-max rounded-md shadow-md text-popover-foreground bg-popover text-xs font-bold transition-all duration-100 scale-0 origin-left group-hover:scale-100 z-50 border border-border`}>
-                {tooltip}
-            </span>
-            {isOpen && (
-                 <div className={`absolute z-20 w-48 rounded-xl shadow-lg bg-popover border border-border animate-slide-up-fade ${isCollapsed ? 'bottom-0 left-full ml-2' : 'bottom-full mb-2'}`}>
-                     {children}
-                 </div>
-            )}
-        </div>
-    );
-};
-
 
 const BottomIcon: React.FC<{icon: React.FC<any>, badgeCount?: number, onClick: () => void, isCollapsed: boolean, tooltip: string}> = ({ icon: Icon, badgeCount = 0, onClick, isCollapsed, tooltip }) => (
     <div className="relative group">

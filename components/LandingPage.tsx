@@ -6,7 +6,7 @@ import JobApplicationModal from './JobApplicationModal';
 import FAQSection from './FAQSection';
 import FeatureDetailModal from './FeatureDetailModal';
 import type { Feature } from './FeatureDetailModal';
-import type { UserSettings, Theme, Language } from '../types';
+import type { UserSettings, Language } from '../types';
 import { languageList } from '../i18n';
 import SignInModal from './SignInModal';
 import SignUpModal from './SignUpModal';
@@ -230,20 +230,20 @@ const LegalModal: React.FC<LegalModalProps> = ({ isOpen, onClose, title, content
             aria-labelledby="legal-modal-title"
         >
             <div 
-                className="bg-slate-900/70 backdrop-blur-xl border border-slate-300/10 rounded-2xl shadow-2xl w-full max-w-3xl m-4 text-white transform transition-all max-h-[90vh] flex flex-col"
+                className="bg-card/70 backdrop-blur-xl border border-border rounded-2xl shadow-2xl w-full max-w-3xl m-4 text-foreground transform transition-all max-h-[90vh] flex flex-col"
                 onClick={e => e.stopPropagation()}
             >
-                <div className="flex justify-between items-center p-6 border-b border-slate-700 flex-shrink-0">
+                <div className="flex justify-between items-center p-6 border-b border-border flex-shrink-0">
                     <h2 id="legal-modal-title" className="text-2xl font-bold">{title}</h2>
-                    <button onClick={onClose} className="text-slate-400 hover:text-white p-2 rounded-full hover:bg-slate-700/80" aria-label="Close">
+                    <button onClick={onClose} className="text-muted-foreground hover:text-foreground p-2 rounded-full hover:bg-accent" aria-label="Close">
                         <CloseIcon className="w-6 h-6" />
                     </button>
                 </div>
-                <div className="p-8 space-y-4 overflow-y-auto prose prose-invert prose-p:text-slate-300 prose-headings:text-white max-w-none">
+                <div className="p-8 space-y-4 overflow-y-auto prose prose-invert prose-p:text-muted-foreground prose-headings:text-foreground max-w-none">
                     {content}
                 </div>
-                <div className="p-4 border-t border-slate-700 flex-shrink-0 flex justify-end">
-                    <button onClick={onClose} className="bg-sky-600 hover:bg-sky-500 text-white font-bold py-2 px-6 rounded-lg">
+                <div className="p-4 border-t border-border flex-shrink-0 flex justify-end">
+                    <button onClick={onClose} className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-2 px-6 rounded-lg">
                         Close
                     </button>
                 </div>
@@ -299,9 +299,9 @@ const infoDocs = {
                 <p className="lead">If you have any questions, concerns, or inquiries, please feel free to reach out to us. Our support team is here to assist you.</p>
                 <h4>General & Support Inquiries</h4>
                 <p>For all support-related questions, please email our dedicated team at:</p>
-                <p><strong>Email:</strong> <a href="mailto:support@valifi.net" className="text-sky-400 hover:underline">support@valifi.net</a></p>
+                <p><strong>Email:</strong> <a href="mailto:support@valifi.net" className="text-primary hover:underline">support@valifi.net</a></p>
                 <h4>Business & Partnership Inquiries</h4>
-                <p>For business proposals or partnership opportunities, please contact our business development team at <a href="mailto:partners@valifi.net" className="text-sky-400 hover:underline">partners@valifi.net</a>.</p>
+                <p>For business proposals or partnership opportunities, please contact our business development team at <a href="mailto:partners@valifi.net" className="text-primary hover:underline">partners@valifi.net</a>.</p>
                 <h4>Address</h4>
                 <p>Valifi, Inc.<br/>123 Finance Avenue<br/>Innovation City, 10101, USA</p>
             </>
@@ -321,15 +321,8 @@ const LandingHeader: React.FC<{
     setUserSettings: React.Dispatch<React.SetStateAction<UserSettings>>;
 }> = ({ onSignInClick, onExplore, onCareersClick, onFaqClick, onPhilosophyClick, onLeadershipClick, userSettings, setUserSettings }) => {
     const { t, i18n } = useTranslation('landing');
-    const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false);
     const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
-    const themeMenuRef = useRef<HTMLDivElement>(null);
     const langMenuRef = useRef<HTMLDivElement>(null);
-
-    const handleThemeChange = (theme: Theme) => {
-        setUserSettings(prev => ({ ...prev, settings: { ...prev.settings, preferences: { ...prev.settings.preferences, theme: theme } } }));
-        setIsThemeMenuOpen(false);
-    };
 
     const handleLanguageChange = (langCode: Language) => {
         i18n.changeLanguage(langCode);
@@ -339,31 +332,28 @@ const LandingHeader: React.FC<{
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
-            if (themeMenuRef.current && !themeMenuRef.current.contains(event.target as Node)) {
-                setIsThemeMenuOpen(false);
-            }
             if (langMenuRef.current && !langMenuRef.current.contains(event.target as Node)) {
                 setIsLangMenuOpen(false);
             }
         }
         document.addEventListener("mousedown", handleClickOutside);
         return () => { document.removeEventListener("mousedown", handleClickOutside); };
-    }, [themeMenuRef, langMenuRef]);
+    }, [langMenuRef]);
 
     return (
         <header className="absolute top-0 left-0 right-0 z-30 p-4">
             <div className="container mx-auto flex justify-between items-center bg-black/20 backdrop-blur-md p-3 rounded-2xl border border-white/10">
                 <div className="flex items-center gap-3">
-                    <ValifiLogo className="w-9 h-9 text-sky-400" />
+                    <ValifiLogo className="w-9 h-9 text-primary" />
                     <span className="text-xl font-bold text-white tracking-tighter">Valifi</span>
                     <div className="relative" ref={langMenuRef}>
-                        <button onClick={() => setIsLangMenuOpen(!isLangMenuOpen)} className="text-slate-300 hover:text-white p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors" title={t('change_language')}>
+                        <button onClick={() => setIsLangMenuOpen(!isLangMenuOpen)} className="text-muted-foreground hover:text-foreground p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors" title={t('change_language')}>
                             <GlobeIcon className="w-5 h-5" />
                         </button>
                         {isLangMenuOpen && (
-                            <div className="absolute top-full left-0 mt-2 w-56 max-h-96 overflow-y-auto bg-slate-800/90 backdrop-blur-md border border-slate-700 rounded-xl shadow-2xl p-2 z-50">
+                            <div className="absolute top-full left-0 mt-2 w-56 max-h-96 overflow-y-auto bg-popover/90 backdrop-blur-md border border-border rounded-xl shadow-2xl p-2 z-50">
                                 {languageList.map(lang => (
-                                    <button key={lang.code} onClick={() => handleLanguageChange(lang.code)} className={`w-full text-left px-3 py-1.5 text-sm font-semibold rounded-md transition-colors ${i18n.language === lang.code ? 'bg-sky-600 text-white' : 'text-slate-300 hover:bg-slate-700'}`}>
+                                    <button key={lang.code} onClick={() => handleLanguageChange(lang.code)} className={`w-full text-left px-3 py-1.5 text-sm font-semibold rounded-md transition-colors ${i18n.language === lang.code ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-accent'}`}>
                                         {lang.name}
                                     </button>
                                 ))}
@@ -372,29 +362,14 @@ const LandingHeader: React.FC<{
                     </div>
                 </div>
                 <div className="flex items-center gap-2 md:gap-4">
-                    <a href="#features" onClick={(e) => { e.preventDefault(); onExplore(); }} className="text-sm font-semibold text-slate-300 hover:text-white transition-colors hidden md:block">{t('header_features')}</a>
-                    <a href="#philosophy" onClick={(e) => { e.preventDefault(); onPhilosophyClick(); }} className="text-sm font-semibold text-slate-300 hover:text-white transition-colors hidden md:block">{t('header_philosophy')}</a>
-                    <a href="#leadership" onClick={(e) => { e.preventDefault(); onLeadershipClick(); }} className="text-sm font-semibold text-slate-300 hover:text-white transition-colors hidden md:block">{t('header_leadership')}</a>
-                    <a href="#spectrum" onClick={(e) => { e.preventDefault(); document.getElementById('spectrum')?.scrollIntoView({ behavior: 'smooth' }); }} className="text-sm font-semibold text-slate-300 hover:text-white transition-colors hidden md:block">{t('header_plans')}</a>
-                    <a href="#testimonials" onClick={(e) => { e.preventDefault(); document.getElementById('testimonials')?.scrollIntoView({ behavior: 'smooth' }); }} className="text-sm font-semibold text-slate-300 hover:text-white transition-colors hidden md:block">{t('header_testimonials')}</a>
-                    <a href="#careers" onClick={(e) => { e.preventDefault(); onCareersClick(); }} className="text-sm font-semibold text-slate-300 hover:text-white transition-colors hidden md:block">{t('header_careers')}</a>
-                    <a href="#faq" onClick={(e) => { e.preventDefault(); onFaqClick(); }} className="text-sm font-semibold text-slate-300 hover:text-white transition-colors hidden md:block">{t('header_faq')}</a>
+                    <a href="#features" onClick={(e) => { e.preventDefault(); onExplore(); }} className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors hidden md:block">{t('header_features')}</a>
+                    <a href="#philosophy" onClick={(e) => { e.preventDefault(); onPhilosophyClick(); }} className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors hidden md:block">{t('header_philosophy')}</a>
+                    <a href="#leadership" onClick={(e) => { e.preventDefault(); onLeadershipClick(); }} className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors hidden md:block">{t('header_leadership')}</a>
+                    <a href="#spectrum" onClick={(e) => { e.preventDefault(); document.getElementById('spectrum')?.scrollIntoView({ behavior: 'smooth' }); }} className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors hidden md:block">{t('header_plans')}</a>
+                    <a href="#testimonials" onClick={(e) => { e.preventDefault(); document.getElementById('testimonials')?.scrollIntoView({ behavior: 'smooth' }); }} className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors hidden md:block">{t('header_testimonials')}</a>
+                    <a href="#careers" onClick={(e) => { e.preventDefault(); onCareersClick(); }} className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors hidden md:block">{t('header_careers')}</a>
+                    <a href="#faq" onClick={(e) => { e.preventDefault(); onFaqClick(); }} className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors hidden md:block">{t('header_faq')}</a>
                     
-                    <div className="relative" ref={themeMenuRef}>
-                        <button onClick={() => setIsThemeMenuOpen(!isThemeMenuOpen)} className="text-slate-300 hover:text-white p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors" title={t('change_theme')}>
-                            <PaletteIcon className="w-5 h-5" />
-                        </button>
-                        {isThemeMenuOpen && (
-                             <div className="absolute top-full right-0 mt-2 w-48 bg-slate-800/90 backdrop-blur-md border border-slate-700 rounded-xl shadow-2xl p-2 z-50">
-                                 {(['light', 'dark', 'midnight', 'solarized', 'sunset', 'system'] as const).map(theme => (
-                                     <button key={theme} onClick={() => handleThemeChange(theme)} className={`w-full text-left px-3 py-1.5 text-sm font-semibold rounded-md capitalize transition-colors ${userSettings.settings.preferences.theme === theme ? 'bg-sky-600 text-white' : 'text-slate-300 hover:bg-slate-700'}`}>
-                                         {theme}
-                                     </button>
-                                 ))}
-                            </div>
-                        )}
-                    </div>
-
                     <button onClick={onSignInClick} className="text-sm font-semibold text-white bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition-colors">
                         {t('header_signin')}
                     </button>
@@ -408,19 +383,19 @@ const HeroSection: React.FC<{ onSignUpClick: () => void; onExplore: () => void }
     const { t } = useTranslation('landing');
     return (
         <section className="relative h-screen flex items-center justify-center text-center text-white overflow-hidden">
-            <div className="absolute inset-0 bg-slate-900">
+            <div className="absolute inset-0 bg-background">
                 <img src="https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=2832&auto=format&fit=crop" alt="Financial Growth Background" className="w-full h-full object-cover opacity-20" />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent"></div>
             </div>
             <div className="relative z-10 p-4">
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400">
+                <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-muted-foreground">
                     {t('hero_title')}
                 </h1>
-                <p className="mt-6 max-w-3xl mx-auto text-lg md:text-xl text-slate-300">
+                <p className="mt-6 max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground">
                     {t('hero_subtitle')}
                 </p>
                 <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <button onClick={onSignUpClick} className="w-full sm:w-auto px-8 py-3.5 bg-sky-500 hover:bg-sky-400 text-white font-bold rounded-lg text-lg transition-all transform hover:scale-105 shadow-lg shadow-sky-500/20">
+                    <button onClick={onSignUpClick} className="w-full sm:w-auto px-8 py-3.5 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg text-lg transition-all transform hover:scale-105 shadow-lg shadow-primary/20">
                         {t('get_started_now')}
                     </button>
                     <button onClick={onExplore} className="w-full sm:w-auto px-8 py-3.5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-lg text-lg transition-colors backdrop-blur-sm border border-white/20">
@@ -433,13 +408,13 @@ const HeroSection: React.FC<{ onSignUpClick: () => void; onExplore: () => void }
 };
 
 const FeatureCard: React.FC<{ feature: Feature, onLearnMore: () => void }> = ({ feature, onLearnMore }) => (
-    <div className="bg-slate-900/50 p-6 rounded-2xl border border-slate-800 transition-all duration-300 hover:border-sky-500/50 hover:-translate-y-1 hover:shadow-2xl hover:shadow-sky-900/50">
-        <div className="bg-slate-800/70 w-12 h-12 flex items-center justify-center rounded-xl mb-4">
-            <feature.Icon className="w-6 h-6 text-sky-400" />
+    <div className="bg-card/50 p-6 rounded-2xl border border-border transition-all duration-300 hover:border-primary/50 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/10">
+        <div className="bg-secondary w-12 h-12 flex items-center justify-center rounded-xl mb-4">
+            <feature.Icon className="w-6 h-6 text-primary" />
         </div>
-        <h3 className="text-lg font-bold text-white">{feature.title}</h3>
-        <p className="mt-2 text-sm text-slate-400">{feature.description}</p>
-        <button onClick={onLearnMore} className="text-sm font-semibold text-sky-400 hover:text-sky-300 mt-4 inline-block">Learn More &rarr;</button>
+        <h3 className="text-lg font-bold text-foreground">{feature.title}</h3>
+        <p className="mt-2 text-sm text-muted-foreground">{feature.description}</p>
+        <button onClick={onLearnMore} className="text-sm font-semibold text-primary hover:text-primary/80 mt-4 inline-block">Learn More &rarr;</button>
     </div>
 );
 
@@ -449,8 +424,8 @@ const FeaturesSection = React.forwardRef<HTMLDivElement, { onLearnMore: (feature
         <section ref={ref} id="features" className="py-20 sm:py-32">
             <div className="container mx-auto px-4">
                 <div className="text-center">
-                    <h2 className="text-3xl md:text-4xl font-bold text-white">{t('features_title')}</h2>
-                    <p className="mt-4 max-w-2xl mx-auto text-slate-400">{t('features_subtitle')}</p>
+                    <h2 className="text-3xl md:text-4xl font-bold text-foreground">{t('features_title')}</h2>
+                    <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">{t('features_subtitle')}</p>
                 </div>
                 <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {features.map(feature => (
@@ -464,19 +439,19 @@ const FeaturesSection = React.forwardRef<HTMLDivElement, { onLearnMore: (feature
 FeaturesSection.displayName = 'FeaturesSection';
 
 const PhilosophyCard: React.FC<{ item: typeof philosophyPoints[0], index: number }> = ({ item, index }) => (
-    <div className="bg-slate-900/50 p-6 rounded-2xl border border-slate-800 transition-all duration-300 hover:border-sky-500/50 hover:-translate-y-1 hover:shadow-2xl hover:shadow-sky-900/50">
+    <div className="bg-card/50 p-6 rounded-2xl border border-border transition-all duration-300 hover:border-primary/50 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/10">
         <div className="flex items-center gap-4">
-            <div className="bg-slate-800/70 w-12 h-12 flex items-center justify-center rounded-xl flex-shrink-0">
-                <item.Icon className="w-6 h-6 text-sky-400" />
+            <div className="bg-secondary w-12 h-12 flex items-center justify-center rounded-xl flex-shrink-0">
+                <item.Icon className="w-6 h-6 text-primary" />
             </div>
-            <h3 className="text-lg font-bold text-white">{index + 1}. {item.title}</h3>
+            <h3 className="text-lg font-bold text-foreground">{index + 1}. {item.title}</h3>
         </div>
-        <p className="mt-4 text-sm text-slate-400">{item.description}</p>
+        <p className="mt-4 text-sm text-muted-foreground">{item.description}</p>
         {item.subPoints && item.subPoints.length > 0 && (
             <ul className="mt-4 space-y-2">
                 {item.subPoints.map((sp, i) => (
-                    <li key={i} className="text-sm text-slate-400">
-                        <strong className="text-slate-300">{sp.label}</strong> {sp.text}
+                    <li key={i} className="text-sm text-muted-foreground">
+                        <strong className="text-foreground">{sp.label}</strong> {sp.text}
                     </li>
                 ))}
             </ul>
@@ -485,13 +460,13 @@ const PhilosophyCard: React.FC<{ item: typeof philosophyPoints[0], index: number
 );
 
 const PhilosophySection = React.forwardRef<HTMLDivElement>((props, ref) => (
-    <section ref={ref} id="philosophy" className="py-20 sm:py-32 bg-slate-950/40">
+    <section ref={ref} id="philosophy" className="py-20 sm:py-32 bg-background/40">
         <div className="container mx-auto px-4">
             <div className="text-center">
-                <h2 className="text-3xl md:text-4xl font-bold text-white">What We Believe</h2>
-                <p className="mt-4 max-w-2xl mx-auto text-slate-400">Our Investment Philosophy at Valifi</p>
+                <h2 className="text-3xl md:text-4xl font-bold text-foreground">What We Believe</h2>
+                <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">Our Investment Philosophy at Valifi</p>
             </div>
-            <p className="mt-8 max-w-4xl mx-auto text-center text-slate-300">
+            <p className="mt-8 max-w-4xl mx-auto text-center text-foreground">
                 At Valifi, we recognize that successful investing isn’t about speculation or following trends—it’s about precision, discipline, and data-backed insights. Our philosophy is rooted in proven strategies, systematic processes, and a deep commitment to helping our clients build long-term wealth. We believe that anyone, regardless of their experience or wealth, can achieve financial success when they invest intelligently. Here’s how we approach it:
             </p>
             <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -508,17 +483,17 @@ const LeadershipSection = React.forwardRef<HTMLDivElement>((props, ref) => (
     <section ref={ref} id="leadership" className="py-20 sm:py-32">
         <div className="container mx-auto px-4">
             <div className="text-center">
-                <h2 className="text-3xl md:text-4xl font-bold text-white">Founders and Leadership</h2>
-                <p className="mt-4 max-w-2xl mx-auto text-slate-400">The leadership at Valifi brings a wealth of knowledge, experience, and expertise from across the financial and tech industries:</p>
+                <h2 className="text-3xl md:text-4xl font-bold text-foreground">Founders and Leadership</h2>
+                <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">The leadership at Valifi brings a wealth of knowledge, experience, and expertise from across the financial and tech industries:</p>
             </div>
             <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                 {leadershipTeam.map(leader => (
-                    <div key={leader.name} className="bg-slate-900/50 p-8 rounded-2xl border border-slate-800 text-center transition-all duration-300 hover:border-sky-500/50 hover:-translate-y-2 hover:shadow-2xl hover:shadow-sky-900/50">
-                        <h3 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-300 to-cyan-400">
+                    <div key={leader.name} className="bg-card/50 p-8 rounded-2xl border border-border text-center transition-all duration-300 hover:border-primary/50 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10">
+                        <h3 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/70">
                             {leader.name}
                         </h3>
-                        <p className="font-semibold text-sky-400 mt-1">{leader.title}</p>
-                        <p className="mt-4 text-sm text-slate-300">{leader.bio}</p>
+                        <p className="font-semibold text-primary mt-1">{leader.title}</p>
+                        <p className="mt-4 text-sm text-muted-foreground">{leader.bio}</p>
                     </div>
                 ))}
             </div>
@@ -574,37 +549,37 @@ const ProfitCalculator = () => {
 
 
     return (
-        <div className="bg-slate-900/50 p-6 md:p-8 rounded-2xl border border-slate-800 shadow-2xl shadow-black/30">
+        <div className="bg-card/50 p-6 md:p-8 rounded-2xl border border-border shadow-2xl shadow-black/30">
             <h3 className="text-2xl font-bold text-white text-center mb-6">Profit Calculator</h3>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
                 <div className="space-y-6">
                     <div>
-                        <label htmlFor="investment-amount" className="block text-sm font-medium text-slate-300">Investment Amount (USD)</label>
+                        <label htmlFor="investment-amount" className="block text-sm font-medium text-muted-foreground">Investment Amount (USD)</label>
                         <input
                             id="investment-amount"
                             type="number"
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
-                            className="mt-1 w-full bg-slate-800 border border-slate-700 rounded-lg py-2 px-3 text-white text-lg"
+                            className="mt-1 w-full bg-secondary border border-border rounded-lg py-2 px-3 text-white text-lg"
                             placeholder="e.g., 10000"
                         />
                     </div>
                      <div>
-                        <label htmlFor="spectrum-plan" className="block text-sm font-medium text-slate-300">Spectrum Equity Plan</label>
+                        <label htmlFor="spectrum-plan" className="block text-sm font-medium text-muted-foreground">Spectrum Equity Plan</label>
                         <select
                             id="spectrum-plan"
                             value={selectedPlanId}
                             onChange={(e) => setSelectedPlanId(e.target.value)}
-                            className="mt-1 w-full bg-slate-800 border border-slate-700 rounded-lg py-2.5 px-3 text-white"
+                            className="mt-1 w-full bg-secondary border border-border rounded-lg py-2.5 px-3 text-white"
                         >
                             {newPlans.map(plan => (
                                 <option key={plan.id} value={plan.id}>{plan.name} ({plan.dailyReturns} Daily)</option>
                             ))}
                         </select>
-                        {selectedPlan && <p className="text-xs text-slate-500 mt-1">Range: {selectedPlan.investmentRange}</p>}
+                        {selectedPlan && <p className="text-xs text-muted-foreground mt-1">Range: {selectedPlan.investmentRange}</p>}
                     </div>
                      <div>
-                        <label htmlFor="investment-duration" className="block text-sm font-medium text-slate-300">Investment Duration</label>
+                        <label htmlFor="investment-duration" className="block text-sm font-medium text-muted-foreground">Investment Duration</label>
                          <input
                             id="investment-duration"
                             type="range"
@@ -614,26 +589,26 @@ const ProfitCalculator = () => {
                             onChange={(e) => setDuration(e.target.value)}
                             className="mt-2 w-full range-lg"
                         />
-                        <div className="flex justify-between text-xs text-slate-400 mt-1">
+                        <div className="flex justify-between text-xs text-muted-foreground mt-1">
                             <span>7 days</span>
-                            <span className="font-bold text-sky-400">{duration} days</span>
+                            <span className="font-bold text-primary">{duration} days</span>
                             <span>365 days</span>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-slate-800/60 p-6 rounded-xl border border-slate-700 h-full flex flex-col justify-between">
+                <div className="bg-secondary/60 p-6 rounded-xl border border-border h-full flex flex-col justify-between">
                     <div>
-                        <p className="text-sm text-slate-400">Projected Profit</p>
-                        <p className="text-4xl lg:text-5xl font-bold text-emerald-400 tracking-tighter my-1">{formatCurrency(projectedProfit)}</p>
-                        <p className="text-lg text-slate-300 font-semibold">Total ROI: <span className="text-emerald-400">{roiPercentage.toFixed(2)}%</span></p>
+                        <p className="text-sm text-muted-foreground">Projected Profit</p>
+                        <p className="text-4xl lg:text-5xl font-bold text-success tracking-tighter my-1">{formatCurrency(projectedProfit)}</p>
+                        <p className="text-lg text-muted-foreground font-semibold">Total ROI: <span className="text-success">{roiPercentage.toFixed(2)}%</span></p>
                     </div>
                     <div className="mt-6">
-                        <div className="w-full bg-slate-700 rounded-full h-4 relative text-xs font-bold text-white overflow-hidden flex">
-                            <div className="bg-sky-500 h-full flex items-center justify-center pl-2" style={{ width: `${initialAmountPercentage}%`}}>Initial</div>
-                            <div className="bg-emerald-500 h-full flex items-center justify-center pr-2" style={{ width: `${100-initialAmountPercentage}%`}}>Profit</div>
+                        <div className="w-full bg-muted rounded-full h-4 relative text-xs font-bold text-white overflow-hidden flex">
+                            <div className="bg-primary h-full flex items-center justify-center pl-2" style={{ width: `${initialAmountPercentage}%`}}>Initial</div>
+                            <div className="bg-success h-full flex items-center justify-center pr-2" style={{ width: `${100-initialAmountPercentage}%`}}>Profit</div>
                         </div>
-                        <div className="flex justify-between text-xs text-slate-400 mt-1">
+                        <div className="flex justify-between text-xs text-muted-foreground mt-1">
                             <span>{formatCurrency(parseFloat(amount) || 0)}</span>
                             <span>{formatCurrency(totalReturn)}</span>
                         </div>
@@ -647,7 +622,7 @@ const ProfitCalculator = () => {
 
 const PlanDetailRow: React.FC<{ label: string; value: string }> = ({ label, value }) => (
     <div className="flex justify-between items-center py-2.5 border-b border-white/10">
-        <span className="text-sm text-slate-400">{label}:</span>
+        <span className="text-sm text-muted-foreground">{label}:</span>
         <span className="font-semibold text-white text-sm text-right">{value}</span>
     </div>
 );
@@ -655,7 +630,7 @@ const PlanDetailRow: React.FC<{ label: string; value: string }> = ({ label, valu
 const LandingPlanCard: React.FC<{ plan: any, onInvestClick: () => void }> = ({ plan, onInvestClick }) => {
     const { t } = useTranslation('landing');
     return (
-        <div className={`flex flex-col overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 hover:shadow-2xl hover:${plan.shadowColor} bg-slate-900/50 p-6 rounded-2xl border border-slate-800`}>
+        <div className={`flex flex-col overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 hover:shadow-2xl hover:${plan.shadowColor} bg-card/50 p-6 rounded-2xl border border-border`}>
             <div className={`p-3 -m-6 mb-6 ${plan.colorClass} border-b-2 ${plan.borderColor}`}>
                 <h3 className="text-xl font-bold text-white text-center tracking-tight">{plan.name}</h3>
             </div>
@@ -677,11 +652,11 @@ const LandingPlanCard: React.FC<{ plan: any, onInvestClick: () => void }> = ({ p
 }
 
 const SpectrumSection: React.FC<{ onSignInClick: () => void }> = ({ onSignInClick }) => (
-     <section id="spectrum" className="py-20 sm:py-32 bg-slate-950/40">
+     <section id="spectrum" className="py-20 sm:py-32 bg-background/40">
         <div className="container mx-auto px-4">
             <div className="text-center">
-                <h2 className="text-3xl md:text-4xl font-bold text-white">Spectrum Equity Plans</h2>
-                <p className="mt-4 max-w-2xl mx-auto text-slate-400">
+                <h2 className="text-3xl md:text-4xl font-bold text-foreground">Spectrum Equity Plans</h2>
+                <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
                     Choose a plan that matches your ambition. The bigger the investment, the greater the return. Calculate your potential profit below.
                 </p>
             </div>
@@ -786,26 +761,26 @@ interface TestimonialCardProps {
 }
 
 const TestimonialCard: React.FC<TestimonialCardProps> = ({ id, quote, name, title, avatar, rating, likes, isLiked, onLike }) => (
-    <figure className="relative bg-slate-900/70 p-6 rounded-2xl border border-slate-800 transition-all duration-300 hover:border-sky-500/50 hover:-translate-y-2 hover:shadow-2xl hover:shadow-sky-900/50 backdrop-blur-sm flex flex-col h-full">
-        <span className="absolute top-4 left-5 text-7xl font-serif text-slate-800" aria-hidden="true">“</span>
-        <blockquote className="text-slate-300 mt-4 flex-grow relative z-10 pt-8">
+    <figure className="relative bg-card/70 p-6 rounded-2xl border border-border transition-all duration-300 hover:border-primary/50 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10 backdrop-blur-sm flex flex-col h-full">
+        <span className="absolute top-4 left-5 text-7xl font-serif text-secondary" aria-hidden="true">“</span>
+        <blockquote className="text-muted-foreground mt-4 flex-grow relative z-10 pt-8">
             <p>{quote}</p>
         </blockquote>
-        <figcaption className="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between">
+        <figcaption className="mt-6 pt-4 border-t border-border flex items-center justify-between">
             <div className="flex items-center gap-4">
-                <img src={avatar} alt={name} className="w-12 h-12 rounded-full object-cover border-2 border-slate-700 shadow-lg"/>
+                <img src={avatar} alt={name} className="w-12 h-12 rounded-full object-cover border-2 border-border shadow-lg"/>
                 <div>
-                    <div className="font-bold text-white text-base">{name}</div>
-                    <div className="text-sm font-semibold text-sky-400">{title}</div>
+                    <div className="font-bold text-foreground text-base">{name}</div>
+                    <div className="text-sm font-semibold text-primary">{title}</div>
                 </div>
             </div>
             <div className="flex items-center gap-4">
                 <div className="flex items-center gap-1">
                     {Array.from({ length: 5 }).map((_, i) => (
-                        <svg key={i} className={`w-5 h-5 ${i < rating ? 'text-amber-400' : 'text-slate-600'}`} fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                        <svg key={i} className={`w-5 h-5 ${i < rating ? 'text-amber-400' : 'text-muted-foreground/30'}`} fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
                     ))}
                 </div>
-                 <button onClick={() => onLike(id)} className={`text-sm font-semibold transition-colors flex items-center gap-1.5 ${isLiked ? 'text-red-500' : 'text-slate-400 hover:text-red-400'}`}>
+                 <button onClick={() => onLike(id)} className={`text-sm font-semibold transition-colors flex items-center gap-1.5 ${isLiked ? 'text-destructive' : 'text-muted-foreground hover:text-destructive'}`}>
                     <svg className="w-4 h-4" fill={isLiked ? 'currentColor' : 'none'} viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
                     {likes}
                 </button>
@@ -834,11 +809,11 @@ const TestimonialsSection: React.FC<{ onSignInClick: () => void; }> = ({ onSignI
 
 
     return (
-        <section id="testimonials" className="py-20 sm:py-32 bg-slate-950/50">
+        <section id="testimonials" className="py-20 sm:py-32 bg-background/50">
             <div className="container mx-auto px-4">
                 <div className="text-center">
-                    <h2 className="text-3xl md:text-4xl font-bold text-white">Trusted by Investors Worldwide</h2>
-                    <p className="mt-4 max-w-2xl mx-auto text-slate-400">Hear what our users are saying about their success with Valifi.</p>
+                    <h2 className="text-3xl md:text-4xl font-bold text-foreground">Trusted by Investors Worldwide</h2>
+                    <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">Hear what our users are saying about their success with Valifi.</p>
                 </div>
             </div>
             <div className="testimonial-slider-wrapper mt-16">
@@ -856,7 +831,7 @@ const TestimonialsSection: React.FC<{ onSignInClick: () => void; }> = ({ onSignI
                 </div>
             </div>
             <div className="container mx-auto px-4 mt-16 text-center">
-                 <button onClick={onSignInClick} className="px-8 py-3.5 bg-sky-500 hover:bg-sky-400 text-white font-bold rounded-lg text-lg transition-all transform hover:scale-105 shadow-lg shadow-sky-500/20">
+                 <button onClick={onSignInClick} className="px-8 py-3.5 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg text-lg transition-all transform hover:scale-105 shadow-lg shadow-primary/20">
                     Join Valifi Today and Start Your Investment Journey
                 </button>
             </div>
@@ -869,46 +844,46 @@ const TrustSection: React.FC = () => (
     <section id="trust" className="py-20 sm:py-32">
         <div className="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
-                <h2 className="text-3xl md:text-4xl font-bold text-white">Backed by Proven Expertise, Secured by Advanced Technology</h2>
-                <p className="mt-6 text-slate-300">
+                <h2 className="text-3xl md:text-4xl font-bold text-foreground">Backed by Proven Expertise, Secured by Advanced Technology</h2>
+                <p className="mt-6 text-muted-foreground">
                     Valifi combines decades of experience from Validea’s proven model-driven strategies. With over $1.5 billion under management, Validea Capital has a track record of delivering superior returns by leveraging quantitative analysis and investment strategies used by some of the world’s greatest investors.
                 </p>
-                <p className="mt-4 text-slate-400">
+                <p className="mt-4 text-muted-foreground">
                     We've built Valifi on this foundation of trust, employing state-of-the-art security measures to protect your assets and data, so you can invest with complete peace of mind.
                 </p>
                 <ul className="mt-8 space-y-4">
                     <li className="flex items-start gap-4">
-                        <ShieldCheckIcon className="w-6 h-6 text-emerald-400 flex-shrink-0 mt-1" />
+                        <ShieldCheckIcon className="w-6 h-6 text-success flex-shrink-0 mt-1" />
                         <div>
-                            <h3 className="font-semibold text-white">Military-Grade Encryption</h3>
-                            <p className="text-sm text-slate-400">All data is secured with AES-256 encryption, both in transit and at rest.</p>
+                            <h3 className="font-semibold text-foreground">Military-Grade Encryption</h3>
+                            <p className="text-sm text-muted-foreground">All data is secured with AES-256 encryption, both in transit and at rest.</p>
                         </div>
                     </li>
                      <li className="flex items-start gap-4">
-                        <LockIcon className="w-6 h-6 text-emerald-400 flex-shrink-0 mt-1" />
+                        <LockIcon className="w-6 h-6 text-success flex-shrink-0 mt-1" />
                         <div>
-                            <h3 className="font-semibold text-white">Multi-Layer Security</h3>
-                            <p className="text-sm text-slate-400">From mandatory 2FA to cold storage for digital assets, we protect your account from all angles.</p>
+                            <h3 className="font-semibold text-foreground">Multi-Layer Security</h3>
+                            <p className="text-sm text-muted-foreground">From mandatory 2FA to cold storage for digital assets, we protect your account from all angles.</p>
                         </div>
                     </li>
                 </ul>
             </div>
             <div className="grid grid-cols-2 gap-8 text-center">
-                <div className="bg-slate-900/50 p-6 rounded-2xl border border-slate-800">
-                    <p className="text-4xl font-bold text-sky-400">99.9%</p>
-                    <p className="text-slate-400 mt-2">Uptime</p>
+                <div className="bg-card/50 p-6 rounded-2xl border border-border">
+                    <p className="text-4xl font-bold text-primary">99.9%</p>
+                    <p className="text-muted-foreground mt-2">Uptime</p>
                 </div>
-                 <div className="bg-slate-900/50 p-6 rounded-2xl border border-slate-800">
-                    <p className="text-4xl font-bold text-sky-400">$1.5B+</p>
-                    <p className="text-slate-400 mt-2">Assets Secured</p>
+                 <div className="bg-card/50 p-6 rounded-2xl border border-border">
+                    <p className="text-4xl font-bold text-primary">$1.5B+</p>
+                    <p className="text-muted-foreground mt-2">Assets Secured</p>
                 </div>
-                 <div className="bg-slate-900/50 p-6 rounded-2xl border border-slate-800">
-                    <p className="text-4xl font-bold text-sky-400">SOC 2</p>
-                    <p className="text-slate-400 mt-2">Compliant</p>
+                 <div className="bg-card/50 p-6 rounded-2xl border border-border">
+                    <p className="text-4xl font-bold text-primary">SOC 2</p>
+                    <p className="text-muted-foreground mt-2">Compliant</p>
                 </div>
-                 <div className="bg-slate-900/50 p-6 rounded-2xl border border-slate-800">
-                    <p className="text-4xl font-bold text-sky-400">24/7</p>
-                    <p className="text-slate-400 mt-2">Support</p>
+                 <div className="bg-card/50 p-6 rounded-2xl border border-border">
+                    <p className="text-4xl font-bold text-primary">24/7</p>
+                    <p className="text-muted-foreground mt-2">Support</p>
                 </div>
             </div>
         </div>
@@ -916,12 +891,12 @@ const TrustSection: React.FC = () => (
 );
 
 const JobListingCard: React.FC<{ title: string; location: string; type: string; onApply: () => void; }> = ({ title, location, type, onApply }) => (
-    <div className="bg-slate-900/50 p-6 rounded-2xl border border-slate-800 transition-all duration-300 hover:border-sky-500/50 hover:-translate-y-1 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div className="bg-card/50 p-6 rounded-2xl border border-border transition-all duration-300 hover:border-primary/50 hover:-translate-y-1 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-            <h3 className="text-xl font-bold text-white">{title}</h3>
-            <div className="flex items-center gap-4 text-sm text-slate-400 mt-2">
+            <h3 className="text-xl font-bold text-foreground">{title}</h3>
+            <div className="flex items-center gap-4 text-sm text-muted-foreground mt-2">
                 <span>{location}</span>
-                <span className="w-1 h-1 bg-slate-600 rounded-full"></span>
+                <span className="w-1 h-1 bg-border rounded-full"></span>
                 <span>{type}</span>
             </div>
         </div>
@@ -932,15 +907,15 @@ const JobListingCard: React.FC<{ title: string; location: string; type: string; 
 );
 
 const CareersSection = React.forwardRef<HTMLDivElement, { onApplyClick: (jobTitle: string) => void }>((props, ref) => (
-    <section ref={ref} id="careers" className="py-20 sm:py-32 bg-slate-950/40">
+    <section ref={ref} id="careers" className="py-20 sm:py-32 bg-background/40">
         <div className="container mx-auto px-4">
             <div className="text-center">
-                <div className="inline-flex items-center gap-2 bg-sky-500/10 text-sky-400 px-3 py-1 rounded-full text-sm font-semibold border border-sky-500/20">
+                <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-semibold border border-primary/20">
                     <BriefcaseIcon className="w-4 h-4" />
                     <span>We're Hiring!</span>
                 </div>
-                <h2 className="text-3xl md:text-4xl font-bold text-white mt-4">Join Our Team</h2>
-                <p className="mt-4 max-w-2xl mx-auto text-slate-400">
+                <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-4">Join Our Team</h2>
+                <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
                     We are building the future of finance and creating opportunities for exceptional people to make a global impact. Explore how you can grow with us.
                 </p>
             </div>
@@ -951,8 +926,8 @@ const CareersSection = React.forwardRef<HTMLDivElement, { onApplyClick: (jobTitl
                 <JobListingCard title="Exchanger Service Representative" location="Remote / Global" type="Full-time" onApply={() => props.onApplyClick('Exchanger Service Representative')} />
             </div>
             <div className="mt-16 text-center">
-                <p className="text-lg text-slate-300">Interested in working with us?</p>
-                <button onClick={() => props.onApplyClick('')} className="mt-4 px-8 py-3.5 bg-sky-500 hover:bg-sky-400 text-white font-bold rounded-lg text-lg transition-all transform hover:scale-105 shadow-lg shadow-sky-500/20">
+                <p className="text-lg text-muted-foreground">Interested in working with us?</p>
+                <button onClick={() => props.onApplyClick('')} className="mt-4 px-8 py-3.5 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg text-lg transition-all transform hover:scale-105 shadow-lg shadow-primary/20">
                     Apply now and join a team that is transforming the future of investment.
                 </button>
             </div>
@@ -967,12 +942,12 @@ const CtaSection: React.FC<{ onSignUpClick: () => void }> = ({ onSignUpClick }) 
         <section className="py-20 sm:py-32">
             <div className="container mx-auto px-4">
                 <div className="text-center">
-                    <h2 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight">{t('cta_title')}</h2>
-                    <p className="mt-4 max-w-xl mx-auto text-slate-300">{t('cta_subtitle')}</p>
+                    <h2 className="text-3xl md:text-5xl font-extrabold text-foreground tracking-tight">{t('cta_title')}</h2>
+                    <p className="mt-4 max-w-xl mx-auto text-muted-foreground">{t('cta_subtitle')}</p>
                     <div className="mt-8">
                         <button
                             onClick={onSignUpClick}
-                            className="px-10 py-4 bg-sky-500 hover:bg-sky-400 text-white font-bold rounded-lg text-lg transition-all transform hover:scale-105 shadow-lg shadow-sky-500/20"
+                            className="px-10 py-4 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg text-lg transition-all transform hover:scale-105 shadow-lg shadow-primary/20"
                         >
                             {t('get_started_now')}
                         </button>
@@ -986,46 +961,46 @@ const CtaSection: React.FC<{ onSignUpClick: () => void }> = ({ onSignUpClick }) 
 const LandingFooter: React.FC<{ onLegalLinkClick: (doc: 'terms' | 'privacy' | 'about' | 'contact') => void }> = ({ onLegalLinkClick }) => {
     const { t } = useTranslation('landing');
     return (
-    <footer className="py-16 border-t border-slate-800">
+    <footer className="py-16 border-t border-border">
         <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                 <div className="lg:col-span-1">
                      <div className="flex items-center gap-3">
-                        <ValifiLogo className="w-9 h-9 text-sky-400" />
-                        <span className="text-xl font-bold text-white tracking-tighter">Valifi</span>
+                        <ValifiLogo className="w-9 h-9 text-primary" />
+                        <span className="text-xl font-bold text-foreground tracking-tighter">Valifi</span>
                     </div>
-                    <p className="mt-4 text-sm text-slate-400">The AI-powered financial operating system for the new economy.</p>
+                    <p className="mt-4 text-sm text-muted-foreground">The AI-powered financial operating system for the new economy.</p>
                 </div>
                  <div className="col-span-1">
-                    <h3 className="font-semibold text-white">{t('footer_platform')}</h3>
+                    <h3 className="font-semibold text-foreground">{t('footer_platform')}</h3>
                     <ul className="mt-4 space-y-2 text-sm">
-                        <li><a href="#" className="text-slate-400 hover:text-white">Investments</a></li>
-                        <li><a href="#" className="text-slate-400 hover:text-white">P2P Exchange</a></li>
-                        <li><a href="#" className="text-slate-400 hover:text-white">Valifi Cards</a></li>
+                        <li><a href="#" className="text-muted-foreground hover:text-foreground">Investments</a></li>
+                        <li><a href="#" className="text-muted-foreground hover:text-foreground">P2P Exchange</a></li>
+                        <li><a href="#" className="text-muted-foreground hover:text-foreground">Valifi Cards</a></li>
                     </ul>
                 </div>
                  <div className="col-span-1">
-                    <h3 className="font-semibold text-white">{t('footer_company')}</h3>
+                    <h3 className="font-semibold text-foreground">{t('footer_company')}</h3>
                     <ul className="mt-4 space-y-2 text-sm">
-                        <li><a href="#" onClick={(e) => { e.preventDefault(); onLegalLinkClick('about'); }} className="text-slate-400 hover:text-white">{t('footer_about')}</a></li>
-                        <li><a href="#careers" onClick={(e) => { e.preventDefault(); document.getElementById('careers')?.scrollIntoView({ behavior: 'smooth' }); }} className="text-slate-400 hover:text-white">Careers</a></li>
-                        <li><a href="#" onClick={(e) => { e.preventDefault(); onLegalLinkClick('contact'); }} className="text-slate-400 hover:text-white">{t('footer_contact')}</a></li>
+                        <li><a href="#" onClick={(e) => { e.preventDefault(); onLegalLinkClick('about'); }} className="text-muted-foreground hover:text-foreground">{t('footer_about')}</a></li>
+                        <li><a href="#careers" onClick={(e) => { e.preventDefault(); document.getElementById('careers')?.scrollIntoView({ behavior: 'smooth' }); }} className="text-muted-foreground hover:text-foreground">Careers</a></li>
+                        <li><a href="#" onClick={(e) => { e.preventDefault(); onLegalLinkClick('contact'); }} className="text-muted-foreground hover:text-foreground">{t('footer_contact')}</a></li>
                     </ul>
                 </div>
                  <div className="col-span-1">
-                    <h3 className="font-semibold text-white">{t('footer_legal')}</h3>
+                    <h3 className="font-semibold text-foreground">{t('footer_legal')}</h3>
                     <ul className="mt-4 space-y-2 text-sm">
-                        <li><a href="#" onClick={(e) => { e.preventDefault(); onLegalLinkClick('privacy'); }} className="text-slate-400 hover:text-white">{t('footer_privacy')}</a></li>
-                        <li><a href="#" onClick={(e) => { e.preventDefault(); onLegalLinkClick('terms'); }} className="text-slate-400 hover:text-white">{t('footer_terms')}</a></li>
+                        <li><a href="#" onClick={(e) => { e.preventDefault(); onLegalLinkClick('privacy'); }} className="text-muted-foreground hover:text-foreground">{t('footer_privacy')}</a></li>
+                        <li><a href="#" onClick={(e) => { e.preventDefault(); onLegalLinkClick('terms'); }} className="text-muted-foreground hover:text-foreground">{t('footer_terms')}</a></li>
                     </ul>
                 </div>
             </div>
-             <div className="mt-16 pt-8 border-t border-slate-800 flex flex-col sm:flex-row justify-between items-center">
-                <p className="text-sm text-slate-500">&copy; {new Date().getFullYear()} Valifi, Inc. All rights reserved.</p>
+             <div className="mt-16 pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center">
+                <p className="text-sm text-muted-foreground">&copy; {new Date().getFullYear()} Valifi, Inc. All rights reserved.</p>
                 <div className="flex items-center gap-6 mt-4 sm:mt-0">
-                    <a href="#" className="text-slate-500 hover:text-white transition-colors"><TwitterIcon className="w-5 h-5" /></a>
-                    <a href="#" className="text-slate-500 hover:text-white transition-colors"><InstagramIcon className="w-5 h-5" /></a>
-                    <a href="#" className="text-slate-500 hover:text-white transition-colors"><LinkedInIcon className="w-5 h-5" /></a>
+                    <a href="#" className="text-muted-foreground hover:text-foreground transition-colors"><TwitterIcon className="w-5 h-5" /></a>
+                    <a href="#" className="text-muted-foreground hover:text-foreground transition-colors"><InstagramIcon className="w-5 h-5" /></a>
+                    <a href="#" className="text-muted-foreground hover:text-foreground transition-colors"><LinkedInIcon className="w-5 h-5" /></a>
                 </div>
             </div>
         </div>
@@ -1084,7 +1059,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onSignUp, userSettin
 
 
     return (
-        <div className="bg-slate-950">
+        <div className="bg-background">
             <LandingHeader onSignInClick={() => setSignInModalOpen(true)} onExplore={handleExploreClick} onCareersClick={handleCareersClick} onFaqClick={handleFaqClick} onPhilosophyClick={handlePhilosophyClick} onLeadershipClick={handleLeadershipClick} userSettings={userSettings} setUserSettings={setUserSettings}/>
             <main>
                 <HeroSection onSignUpClick={() => setSignUpModalOpen(true)} onExplore={handleExploreClick} />

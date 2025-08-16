@@ -20,7 +20,7 @@ import APIGuideView from './components/APIGuideView';
 import DepositModal from './components/DepositModal';
 import WithdrawModal from './components/WithdrawModal';
 import InvestmentDetailModal from './components/InvestmentDetailModal';
-import type { ViewType, Portfolio, Asset, KYCStatus, CardDetails, CardApplicationData, P2POffer, P2POrder, UserSettings, Theme, Language, Notification, UserActivity, NewsItem, PaymentMethod, UserP2PProfile, REITProperty, StakableAsset, InvestableNFT, StakableStock, BankAccount, LoanApplication } from './types';
+import type { ViewType, Portfolio, Asset, KYCStatus, CardDetails, CardApplicationData, P2POffer, P2POrder, UserSettings, Language, Notification, UserActivity, NewsItem, PaymentMethod, UserP2PProfile, REITProperty, StakableAsset, InvestableNFT, StakableStock, BankAccount, LoanApplication } from './types';
 import { AssetType } from './types';
 import { 
     BtcIcon, EthIcon, UsdIcon, AppleIcon, SolanaIcon, CardanoIcon, PolkadotIcon, ChainlinkIcon, AvalancheIcon, NvidiaIcon, GoogleIcon, AmazonIcon, TeslaIcon, 
@@ -32,6 +32,7 @@ import {
 import { CurrencyProvider, useCurrency } from './components/CurrencyContext';
 import LandingPage from './components/LandingPage';
 import * as apiService from './services/api';
+import { languageList } from './i18n';
 
 const iconMap: { [key: string]: React.FC<React.SVGProps<SVGSVGElement>> } = {
     BtcIcon, EthIcon, UsdIcon, AppleIcon, SolanaIcon, CardanoIcon, PolkadotIcon, ChainlinkIcon, AvalancheIcon, NvidiaIcon, GoogleIcon, AmazonIcon, TeslaIcon, DownloadIcon, ArrowUpRightIcon, SwapIcon, CheckCircleIcon, ClockIcon, AlertTriangleIcon, LoanIcon, InvestmentsIcon, UserCheckIcon, NewspaperIcon, CardIcon, RefreshIcon, ArrowDownIcon, NftIcon, HomeIcon, BnbIcon, MaticIcon, UsdtIcon,
@@ -108,7 +109,6 @@ const defaultUserSettings: UserSettings = {
             language: 'en',
             dateFormat: 'MM/DD/YYYY',
             timezone: 'UTC',
-            theme: 'dark',
             balancePrivacy: false,
         },
         privacy: {
@@ -439,6 +439,24 @@ const App: React.FC = () => {
         }
         return guestSettings.settings.preferences;
     }, [currentUser, guestSettings]);
+    
+    useEffect(() => {
+        // Set the theme on the document element
+        document.documentElement.setAttribute('data-theme', 'dark'); // Force dark theme
+        
+        // Handle balance privacy class on body
+        const body = document.body;
+        if (activeSettingsPreferences.balancePrivacy) {
+            body.classList.add('balance-privacy');
+        } else {
+            body.classList.remove('balance-privacy');
+        }
+
+        // Handle language direction
+        const currentLang = languageList.find(lang => lang.code === i18n.language);
+        document.documentElement.dir = currentLang?.dir || 'ltr';
+
+    }, [activeSettingsPreferences.balancePrivacy, i18n.language]);
 
     const handleLogin = useCallback(async (email: string, password: string): Promise<{ success: boolean; message?: string; }> => {
         try {

@@ -1,9 +1,5 @@
-
-
-
 import React, { useState, useMemo } from 'react';
 import type { P2POffer, KYCStatus, ViewType, PaymentMethod, Asset, UserP2PProfile, P2POrder, TradableAsset, Notification, P2PReview } from '../types';
-import { AssetType } from '../types';
 import { UserCheckIcon, LockIcon, PlusCircleIcon, RefreshIcon, FilterIcon, UsersIcon, ShieldCheckIcon } from './icons';
 import { countries } from './countries';
 import CreateOfferModal from './CreateOfferModal';
@@ -109,11 +105,7 @@ const P2PExchangeView: React.FC<P2PExchangeViewProps> = ({ kycStatus, setCurrent
     const [profileToView, setProfileToView] = useState<UserP2PProfile | null>(null);
     const [orderToReview, setOrderToReview] = useState<P2POrder | null>(null);
 
-    const tradableAssets = useMemo((): TradableAsset[] => {
-        return assets
-            .filter(a => a.type === AssetType.CRYPTO)
-            .map(({ ticker, name, Icon }) => ({ ticker, name, Icon }));
-    }, [assets]);
+    const [tradableAssets, setTradableAssets] = useState<TradableAsset[]>([]); // This would be fetched
 
     const selectClass = "w-full bg-secondary border border-border rounded-lg py-2.5 px-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors";
 

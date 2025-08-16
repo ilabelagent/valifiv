@@ -501,8 +501,6 @@ export type Language = 'en' | 'es' | 'ar' | 'he' | 'fr' | 'de' | 'it' | 'ru' | '
 
 export type DateFormat = 'MM/DD/YYYY' | 'DD/MM/YYYY';
 
-export type Theme = 'light' | 'dark' | 'system' | 'midnight' | 'solarized' | 'sunset';
-
 export interface UserSettings {
   profile: UserProfile;
   settings: {
@@ -518,7 +516,6 @@ export interface UserSettings {
         language: Language;
         dateFormat: DateFormat;
         timezone: string;
-        theme: Theme;
         balancePrivacy: boolean;
         sidebarCollapsed?: boolean;
         openNavGroups?: string[];

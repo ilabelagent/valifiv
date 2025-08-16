@@ -4,7 +4,7 @@ import { useCurrency } from './CurrencyContext';
 import { mockFxRates } from './fxService';
 
 const Card: React.FC<{children: React.ReactNode, className?: string}> = ({ children, className = '' }) => (
-    <div className={`bg-slate-900/70 backdrop-blur-xl border border-slate-800 rounded-2xl shadow-2xl shadow-black/25 ${className}`}>
+    <div className={`bg-card text-card-foreground border border-border rounded-xl shadow-sm ${className}`}>
       {children}
     </div>
 );
@@ -55,9 +55,9 @@ const Clock: React.FC<{ hub: MarketTime }> = ({ hub }) => {
 
     return (
         <div className="text-center">
-            <p className="text-sm font-semibold text-white">{hub.city}</p>
-            <p className="font-mono text-lg text-slate-300 tracking-wider">{formatter.format(time)}</p>
-            <div className={`mt-1 text-xs font-bold px-2 py-0.5 rounded-full inline-block ${isMarketOpen ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}>
+            <p className="text-sm font-semibold text-foreground">{hub.city}</p>
+            <p className="font-mono text-lg text-muted-foreground tracking-wider">{formatter.format(time)}</p>
+            <div className={`mt-1 text-xs font-bold px-2 py-0.5 rounded-full inline-block ${isMarketOpen ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}`}>
                 {isMarketOpen ? 'Open' : 'Closed'}
             </div>
         </div>
@@ -85,20 +85,20 @@ const WorldClockFXTicker: React.FC = () => {
 
     return (
         <Card className="overflow-hidden">
-            <div className="p-4 flex items-center gap-3 border-b border-slate-800">
-                <GlobeIcon className="w-5 h-5 text-sky-400" />
-                <h3 className="text-base font-semibold text-white">Global Markets</h3>
+            <div className="p-4 flex items-center gap-3 border-b border-border">
+                <GlobeIcon className="w-5 h-5 text-primary" />
+                <h3 className="text-base font-semibold text-foreground">Global Markets</h3>
             </div>
             <div className="p-4 grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {financialHubs.map(hub => <Clock key={hub.city} hub={hub} />)}
             </div>
-            <div className="relative w-full h-10 bg-slate-900/70 border-t border-slate-800 flex items-center overflow-hidden">
+            <div className="relative w-full h-10 bg-secondary/50 border-t border-border flex items-center overflow-hidden">
                 <div className="animate-marquee whitespace-nowrap flex items-center">
                     {fxPairs.map(item => (
                         <div key={item.pair} className="flex items-center mx-4 text-sm">
-                            <span className="font-semibold text-slate-300">{item.pair}</span>
-                            <span className="ml-2 font-mono text-white">{item.rate}</span>
-                            <span className={`ml-2 font-semibold flex items-center ${item.isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
+                            <span className="font-semibold text-muted-foreground">{item.pair}</span>
+                            <span className="ml-2 font-mono text-foreground">{item.rate}</span>
+                            <span className={`ml-2 font-semibold flex items-center ${item.isPositive ? 'text-success' : 'text-destructive'}`}>
                                 {item.isPositive ? <ArrowUpIcon className="w-3 h-3"/> : <ArrowDownIcon className="w-3 h-3"/>}
                                 {item.change}%
                             </span>
@@ -107,9 +107,9 @@ const WorldClockFXTicker: React.FC = () => {
                      {/* Duplicate for seamless scroll */}
                     {fxPairs.map(item => (
                         <div key={`${item.pair}-2`} className="flex items-center mx-4 text-sm">
-                            <span className="font-semibold text-slate-300">{item.pair}</span>
-                            <span className="ml-2 font-mono text-white">{item.rate}</span>
-                            <span className={`ml-2 font-semibold flex items-center ${item.isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
+                            <span className="font-semibold text-muted-foreground">{item.pair}</span>
+                            <span className="ml-2 font-mono text-foreground">{item.rate}</span>
+                            <span className={`ml-2 font-semibold flex items-center ${item.isPositive ? 'text-success' : 'text-destructive'}`}>
                                 {item.isPositive ? <ArrowUpIcon className="w-3 h-3"/> : <ArrowDownIcon className="w-3 h-3"/>}
                                 {item.change}%
                             </span>

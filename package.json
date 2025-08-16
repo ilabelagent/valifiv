@@ -6,7 +6,7 @@
   "scripts": {
     "postinstall": "npm install --prefix backend",
     "dev": "vercel dev",
-    "build": "vercel build",
+    "build": "echo 'Build step not required for this static setup'",
     "start": "vercel deploy --prod"
   },
   "devDependencies": {

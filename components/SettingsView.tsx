@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as otpauth from 'otpauth';
 import QRCode from 'qrcode';
-import type { UserSettings, Language, Theme } from '../types';
+import type { UserSettings, Language } from '../types';
 import { ShieldCheckIcon, PaletteIcon, PrivacyIcon, DeviceMobileIcon, TwoFactorIcon, SettingsIcon, CameraIcon, CopyIcon, CheckCircleIcon, KeyIcon } from './icons';
 import { useCurrency } from './CurrencyContext';
 import { mockFxRates } from './fxService';
@@ -270,16 +270,6 @@ const SettingsView: React.FC<SettingsViewProps> = ({ settings, setSettings }) =>
                         <select value={tempSettings.settings.preferences.language} onChange={e => handlePreferenceChange('language', e.target.value as Language)} className={inputClass + " w-1/2"}>
                              {languageList.map(lang => <option key={lang.code} value={lang.code}>{lang.name}</option>)}
                         </select>
-                    </div>
-                     <div className="flex items-center justify-between">
-                        <label className="text-muted-foreground">{t('display_theme')}</label>
-                        <div className="flex flex-wrap gap-2 p-1 bg-secondary rounded-lg">
-                            {(['light', 'dark', 'midnight', 'solarized', 'sunset', 'system'] as const).map(theme => (
-                                <button key={theme} onClick={() => handlePreferenceChange('theme', theme)} className={`px-3 py-1 text-sm font-semibold rounded-md capitalize ${tempSettings.settings.preferences.theme === theme ? 'bg-primary text-primary-foreground' : 'text-secondary-foreground hover:bg-accent'}`}>
-                                    {t(`theme_${theme}` as any)}
-                                </button>
-                            ))}
-                        </div>
                     </div>
                      <div className="flex items-center justify-between">
                         <label className="text-muted-foreground">{t('display_privacy_mode')}</label>
