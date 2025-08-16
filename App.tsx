@@ -20,7 +20,7 @@ import APIGuideView from './components/APIGuideView';
 import DepositModal from './components/DepositModal';
 import WithdrawModal from './components/WithdrawModal';
 import InvestmentDetailModal from './components/InvestmentDetailModal';
-import type { ViewType, Portfolio, Asset, KYCStatus, CardDetails, CardApplicationData, P2POffer, P2POrder, UserSettings, Theme, Language, Notification, UserActivity, NewsItem, PaymentMethod, UserP2PProfile, REITProperty, StakableAsset, InvestableNFT, StakableStock } from './types';
+import type { ViewType, Portfolio, Asset, KYCStatus, CardDetails, CardApplicationData, P2POffer, P2POrder, UserSettings, Theme, Language, Notification, UserActivity, NewsItem, PaymentMethod, UserP2PProfile, REITProperty, StakableAsset, InvestableNFT, StakableStock, BankAccount, LoanApplication } from './types';
 import { AssetType } from './types';
 import { 
     BtcIcon, EthIcon, UsdIcon, AppleIcon, SolanaIcon, CardanoIcon, PolkadotIcon, ChainlinkIcon, AvalancheIcon, NvidiaIcon, GoogleIcon, AmazonIcon, TeslaIcon, 
@@ -151,8 +151,8 @@ const AppContent: React.FC<{
 
     // Feature-specific states
     const [cardDetails, setCardDetails] = useState<CardDetails | null>(null);
-    const [linkedBankAccounts, setLinkedBankAccounts] = useState<any[]>([]);
-    const [loanApplications, setLoanApplications] = useState<any[]>([]);
+    const [linkedBankAccounts, setLinkedBankAccounts] = useState<BankAccount[]>([]);
+    const [loanApplications, setLoanApplications] = useState<LoanApplication[]>([]);
     const [p2pOffers, setP2pOffers] = useState<P2POffer[]>([]);
     const [p2pOrders, setP2pOrders] = useState<P2POrder[]>([]);
     const [p2pPaymentMethods, setP2pPaymentMethods] = useState<PaymentMethod[]>([]);
@@ -168,76 +168,77 @@ const AppContent: React.FC<{
     
     const { formatCurrency } = useCurrency();
 
-    useEffect(() => {
-        const fetchSupplementaryData = async () => {
-            try {
-                setIsLoading(true);
-                // The main portfolio data is already in `currentUser.portfolio`.
-                // We just need to process it and fetch supplementary data not tied to the main user object.
-                if (currentUser && currentUser.portfolio) {
-                    setPortfolio({ ...currentUser.portfolio, assets: processAssets(currentUser.portfolio.assets) });
-                    setNotifications(currentUser.notifications || []);
-                    setUserActivity(processUserActivity(currentUser.userActivity || []));
-                    setNewsItems(currentUser.newsItems || []);
-                    setUserSettings(currentUser.settings);
-                }
+    const addNotification = useCallback((notification: Omit<Notification, 'id' | 'timestamp' | 'isRead'>) => {
+      const newNotification: Notification = {
+          ...notification,
+          id: `notif-${Date.now()}`,
+          timestamp: new Date().toISOString(),
+          isRead: false,
+      };
+      setNotifications(prev => [newNotification, ...prev]);
+    }, []);
 
-                const [
-                    cardsRes, banksRes, loansRes, p2pOffersRes, 
-                    p2pOrdersRes, p2pMethodsRes, reitRes, stocksRes, nftsRes
-                ] = await Promise.all([
-                    apiService.getCardDetails(currentUser.id),
-                    apiService.getBankAccounts(currentUser.id),
-                    apiService.getLoans(currentUser.id),
-                    apiService.getP2POffers(),
-                    apiService.getMyP2POrders(currentUser.id),
-                    apiService.getPaymentMethods(currentUser.id),
-                    apiService.getReitProperties(),
-                    apiService.getStakableStocks(),
-                    apiService.getInvestableNfts()
-                ]);
-                
-                if (cardsRes) setCardDetails(cardsRes);
-                if (banksRes) setLinkedBankAccounts(banksRes);
-                if (loansRes) setLoanApplications(loansRes);
-                if (p2pOffersRes) setP2pOffers(processP2POffers(p2pOffersRes.offers));
-                if (p2pOrdersRes) setP2pOrders(processP2POrders(p2pOrdersRes.orders));
-                if (p2pMethodsRes) setP2pPaymentMethods(p2pMethodsRes.paymentMethods);
-                
-                if (reitRes) {
-                    const processedReits = reitRes.reitProperties.map((p: any) => ({
-                        ...p,
-                        status: p.status as 'Open for Shares' | 'Fully Funded'
-                    }));
-                    setReitProperties(processedReits);
-                }
-                if (stocksRes) {
-                    const processedStocks = stocksRes.stakableStocks.map((stock: any) => ({
-                        ...stock,
-                        logo: iconMap[stock.Icon] || UsdIcon
-                    }));
-                    setAvailableStakableStocks(processedStocks);
-                }
-                if (nftsRes) setAvailableInvestableNFTs(nftsRes.investableNFTs);
-                
-                setError(null);
-            } catch (err: any) {
-                setError(err.message);
-            } finally {
-                setIsLoading(false);
+    const fetchAllData = useCallback(async () => {
+        try {
+            setIsLoading(true);
+            if (currentUser && currentUser.portfolio) {
+                setPortfolio({ ...currentUser.portfolio, assets: processAssets(currentUser.portfolio.assets) });
+                setNotifications(currentUser.notifications || []);
+                setUserActivity(processUserActivity(currentUser.userActivity || []));
+                setNewsItems(currentUser.newsItems || []);
+                setUserSettings(currentUser.settings);
             }
-        };
 
-        if (currentUser) {
-            fetchSupplementaryData();
+            const [
+                cardsRes, banksRes, loansRes, p2pOffersRes, 
+                p2pOrdersRes, p2pMethodsRes, reitRes, stocksRes, nftsRes
+            ] = await Promise.all([
+                apiService.getCardDetails(),
+                apiService.getBankAccounts(),
+                apiService.getLoans(),
+                apiService.getP2POffers(),
+                apiService.getMyP2POrders(),
+                apiService.getPaymentMethods(),
+                apiService.getReitProperties(),
+                apiService.getStakableStocks(),
+                apiService.getInvestableNfts()
+            ]);
+            
+            if (cardsRes) setCardDetails(cardsRes);
+            if (banksRes) setLinkedBankAccounts(banksRes);
+            if (loansRes) setLoanApplications(loansRes);
+            if (p2pOffersRes) setP2pOffers(processP2POffers(p2pOffersRes.offers));
+            if (p2pOrdersRes) setP2pOrders(processP2POrders(p2pOrdersRes.orders));
+            if (p2pMethodsRes) setP2pPaymentMethods(p2pMethodsRes.paymentMethods);
+            
+            if (reitRes) {
+                const processedReits = reitRes.reitProperties.map((p: any) => ({ ...p, status: p.status as 'Open for Shares' | 'Fully Funded' }));
+                setReitProperties(processedReits);
+            }
+            if (stocksRes) {
+                const processedStocks = stocksRes.stakableStocks.map((stock: any) => ({ ...stock, logo: iconMap[stock.Icon] || UsdIcon }));
+                setAvailableStakableStocks(processedStocks);
+            }
+            if (nftsRes) setAvailableInvestableNFTs(nftsRes.investableNFTs);
+            
+            setError(null);
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setIsLoading(false);
         }
     }, [currentUser]);
+
+
+    useEffect(() => {
+        if (currentUser) {
+            fetchAllData();
+        }
+    }, [currentUser, fetchAllData]);
     
     const handleUpdateSettings = useCallback(async (updater: React.SetStateAction<UserSettings>) => {
         const currentState = userSettings;
-        const newSettings = typeof updater === 'function'
-            ? (updater as (prevState: UserSettings) => UserSettings)(currentState!)
-            : updater;
+        const newSettings = typeof updater === 'function' ? (updater as (prevState: UserSettings) => UserSettings)(currentState!) : updater;
         if (!newSettings) return;
         
         setUserSettings(newSettings);
@@ -250,29 +251,58 @@ const AppContent: React.FC<{
         }
     }, [currentUser.id, userSettings]);
 
+    const handleInternalTransfer = useCallback(async (recipient: string, amount: number, note: string) => {
+        try {
+            const { updatedPortfolio } = await apiService.internalTransfer(recipient, amount, note);
+            setPortfolio(p => ({ ...p!, ...updatedPortfolio, assets: processAssets(updatedPortfolio.assets) }));
+            addNotification({ type: 'system', title: 'Transfer Successful', description: `You sent ${formatCurrency(amount)} to ${recipient}.` });
+        } catch (err: any) {
+            addNotification({ type: 'system', title: 'Transfer Failed', description: err.message });
+        }
+    }, [addNotification, formatCurrency]);
 
-    const addNotification = useCallback((notification: Omit<Notification, 'id' | 'timestamp' | 'isRead'>) => {
-      const newNotification: Notification = {
-          ...notification,
-          id: `notif-${Date.now()}`,
-          timestamp: new Date().toISOString(),
-          isRead: false,
-      };
-      setNotifications(prev => [newNotification, ...prev]);
-    }, []);
+    const handleApplyForCard = useCallback(async (data: CardApplicationData) => {
+        try {
+            const { cardDetails: newCardDetails } = await apiService.applyForCard(data);
+            setCardDetails(newCardDetails);
+            addNotification({ type: 'system', title: 'Card Application Submitted', description: 'Your card application is now under review.' });
+        } catch (err: any) {
+             addNotification({ type: 'system', title: 'Application Failed', description: err.message });
+        }
+    }, [addNotification]);
+
+    const handleLinkBankAccount = useCallback(async (accountData: Omit<BankAccount, 'id'|'status'>) => {
+        try {
+            const newAccount = await apiService.linkBankAccount(accountData);
+            setLinkedBankAccounts(prev => [...prev, newAccount]);
+            addNotification({ type: 'system', title: 'Bank Account Linked', description: `Your account ${newAccount.nickname} is pending verification.` });
+        } catch(err: any) {
+            addNotification({ type: 'system', title: 'Linking Failed', description: err.message });
+        }
+    }, [addNotification]);
+
+    const handleApplyForLoan = useCallback(async (application: Omit<LoanApplication, 'id'|'date'|'status'>) => {
+        try {
+            const newApplication = await apiService.applyForLoan(application);
+            setLoanApplications(prev => [...prev, newApplication]);
+            addNotification({ type: 'loan', title: 'Loan Application Submitted', description: 'Your application is under review.' });
+        } catch(err: any) {
+             addNotification({ type: 'loan', title: 'Application Failed', description: err.message });
+        }
+    }, [addNotification]);
 
     const p2pProfile: UserP2PProfile = useMemo(() => ({
         id: userSettings?.profile.id || '',
         name: userSettings?.profile.fullName || '',
         avatarUrl: userSettings?.profile.profilePhotoUrl || '',
-        rating: 4.9, // Mock data, would come from user profile in a real app
-        totalTrades: 123, // Mock data
-        completionRate: 99.8, // Mock data
+        rating: 4.9,
+        totalTrades: 123,
+        completionRate: 99.8,
         isVerified: userSettings?.profile.kycStatus === 'Approved',
-        countryCode: 'US', // Mock data, could be inferred from user settings
-        joinDate: '2023-01-01T00:00:00Z', // Mock data
+        countryCode: 'US',
+        joinDate: '2023-01-01T00:00:00Z',
         language: userSettings?.settings.preferences.language || 'en',
-        trustScore: 98, // Mock data
+        trustScore: 98,
     }), [userSettings]);
 
     if (isLoading || !portfolio || !userSettings || !cardDetails) {
@@ -284,7 +314,6 @@ const AppContent: React.FC<{
     }
     
     const kycStatus = userSettings.profile?.kycStatus as KYCStatus || 'Not Started';
-
 
     return (
         <>
@@ -310,7 +339,6 @@ const AppContent: React.FC<{
                 isMobileMenuOpen={isMobileMenuOpen}
                 setIsMobileMenuOpen={setIsMobileMenuOpen}
             >
-                {/* Views rendering */}
                 {
                     {
                         'dashboard': <DashboardView portfolio={portfolio} setCurrentView={setCurrentView} onTransferToMain={() => {}} onDepositClick={() => setDepositModalOpen(true)} onWithdrawClick={() => setWithdrawModalOpen(true)} />,
@@ -341,16 +369,16 @@ const AppContent: React.FC<{
                             orders={p2pOrders}
                             userPaymentMethods={p2pPaymentMethods}
                             setUserPaymentMethods={setP2pPaymentMethods}
-                            onInitiateTrade={async () => ({} as P2POrder)}
+                            onInitiateTrade={apiService.onInitiateTrade}
                             onUpdateOrder={() => {}}
                             addNotification={addNotification}
                         />,
                         'tax': <TaxView transactions={portfolio.transactions} api={apiService.callTaxAdvisor} />,
                         'kyc': <KYCView status={kycStatus} setStatus={() => {}} reason={userSettings.profile.kycRejectionReason || ''} setReason={() => {}} />,
-                        'internal-transfer': <InternalTransfer portfolio={portfolio} onInternalTransfer={async () => {}} />,
-                        'cards': <CardsView cardDetails={cardDetails} onApply={async () => {}} setCardDetails={async () => {}} />,
-                        'banking': <BankingView linkedAccounts={linkedBankAccounts} onLinkAccount={async () => {}} setLinkedBankAccounts={async () => {}} />,
-                        'loans': <LoansView portfolio={portfolio} kycStatus={kycStatus} loanApplications={loanApplications} onApplyForLoan={async () => {}} onLoanRepayment={async () => {}} />,
+                        'internal-transfer': <InternalTransfer portfolio={portfolio} onInternalTransfer={handleInternalTransfer} />,
+                        'cards': <CardsView cardDetails={cardDetails} onApply={handleApplyForCard} setCardDetails={setCardDetails} />,
+                        'banking': <BankingView linkedAccounts={linkedBankAccounts} onLinkAccount={handleLinkBankAccount} setLinkedBankAccounts={setLinkedBankAccounts} />,
+                        'loans': <LoansView portfolio={portfolio} kycStatus={kycStatus} loanApplications={loanApplications} onApplyForLoan={handleApplyForLoan} onLoanRepayment={async () => {}} />,
                         'settings': <SettingsView settings={userSettings} setSettings={handleUpdateSettings} />,
                         'nft': <NFTView nfts={portfolio.assets.filter(a => a.type === AssetType.NFT)} onManageClick={(asset) => { setInvestmentsInitialTab('holdings'); setCurrentView('investments'); }} />,
                         'api_guide': <APIGuideView />,
