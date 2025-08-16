@@ -303,7 +303,7 @@ const TransactionHistory: React.FC<{ transactions: Transaction[] }> = ({ transac
 );
 };
 
-interface DashboardViewProps {
+interface DetailViewModalProps {
   portfolio: Portfolio;
   setCurrentView: (view: ViewType) => void;
   onTransferToMain: (assetId: string) => void;
@@ -311,7 +311,7 @@ interface DashboardViewProps {
   onWithdrawClick: () => void;
 }
 
-const DashboardView: React.FC<DashboardViewProps> = ({ portfolio, setCurrentView, onTransferToMain, onDepositClick, onWithdrawClick }) => {
+const DetailViewModal: React.FC<DetailViewModalProps> = ({ portfolio, setCurrentView, onTransferToMain, onDepositClick, onWithdrawClick }) => {
   const mainBalance = portfolio.assets.find(a => a.type === AssetType.CASH)?.valueUSD || 0;
   const investmentBalance = portfolio.totalValueUSD - mainBalance;
   const investmentAssets = portfolio.assets.filter(a => a.type !== AssetType.CASH);
@@ -347,4 +347,4 @@ const DashboardView: React.FC<DashboardViewProps> = ({ portfolio, setCurrentView
   );
 };
 
-export default DashboardView;
+export default DetailViewModal;

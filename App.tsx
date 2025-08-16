@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import Layout from './components/Layout';
-import DashboardView from './components/DetailViewModal';
+import DetailViewModal from './components/DetailViewModal';
 import InvestmentsView from './components/InvestmentsView';
 import ReferralsView from './components/ReferralsView';
 import PrivacyView from './components/PrivacyView';
@@ -341,7 +341,7 @@ const AppContent: React.FC<{
             >
                 {
                     {
-                        'dashboard': <DashboardView portfolio={portfolio} setCurrentView={setCurrentView} onTransferToMain={() => {}} onDepositClick={() => setDepositModalOpen(true)} onWithdrawClick={() => setWithdrawModalOpen(true)} />,
+                        'dashboard': <DetailViewModal portfolio={portfolio} setCurrentView={setCurrentView} onTransferToMain={() => {}} onDepositClick={() => setDepositModalOpen(true)} onWithdrawClick={() => setWithdrawModalOpen(true)} />,
                         'investments': <InvestmentsView 
                             assets={portfolio.assets}
                             onInvest={() => {}}

@@ -12,8 +12,10 @@
     "dev:backend": "npx nodemon backend/index.js",
     "dev": "concurrently \"npm:dev:frontend\" \"npm:dev:backend\""
   },
+  "engines": { "node": ">=18 <23" },
   "devDependencies": {
     "concurrently": "^8.2.2",
     "serve": "^14.2.3"
   }
 }
+
