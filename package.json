@@ -1,0 +1,19 @@
+{
+  "name": "valifi-platform",
+  "version": "1.0.0",
+  "description": "AI-Powered Financial Platform",
+  "private": true,
+  "scripts": {
+    "start": "concurrently \"npm:start:frontend\" \"npm:start:backend\"",
+    "start:frontend": "serve -l 3000 .",
+    "start:backend": "npm start --prefix backend",
+    "install": "npm install --prefix backend",
+    "dev:frontend": "serve -l 3000 .",
+    "dev:backend": "npx nodemon backend/index.js",
+    "dev": "concurrently \"npm:dev:frontend\" \"npm:dev:backend\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "serve": "^14.2.3"
+  }
+}
