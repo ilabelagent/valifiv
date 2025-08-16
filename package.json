@@ -12,7 +12,11 @@
     "vercel": "^35.2.1"
   },
   "vercel": {
-    "buildCommand": false,
+    "functions": {
+      "backend/index.js": {
+        "includeFiles": "backend/**"
+      }
+    },
     "rewrites": [
       {
         "source": "/api/:path*",
