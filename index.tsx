@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import i18n from './i18n'; // Initialize and import i18next instance
 import { I18nextProvider } from 'react-i18next';
+import './styles.css';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {

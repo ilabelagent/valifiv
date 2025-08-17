@@ -7,21 +7,52 @@ const getAuthHeaders = () => {
     return token ? { 'Authorization': `Bearer ${token}` } : {};
 };
 
+const handleNonJsonResponse = async (response: Response) => {
+    const text = await response.text();
+    // Use the text as the error message, or a default if text is empty
+    return text || `HTTP error! status: ${response.status}`;
+};
+
+
 const handleDataResponse = async (response: Response) => {
     if (response.status === 204) return null;
-    const json = await response.json();
+    
+    const contentType = response.headers.get('content-type');
     if (!response.ok) {
-        throw new Error(json.message || `HTTP error! status: ${response.status}`);
+        if (contentType && contentType.includes('application/json')) {
+            const json = await response.json();
+            throw new Error(json.message || `HTTP error! status: ${response.status}`);
+        } else {
+            const text = await handleNonJsonResponse(response);
+            throw new Error(text);
+        }
     }
-    return json.data || json;
+
+    if (contentType && contentType.includes('application/json')) {
+        const json = await response.json();
+        return json.data || json;
+    }
+    // If the server sends a successful (2xx) response that isn't JSON, return the text.
+    return response.text();
 };
 
 const handleRootResponse = async (response: Response) => {
-    const json = await response.json();
+    const contentType = response.headers.get('content-type');
     if (!response.ok) {
-        throw new Error(json.message || `HTTP error! status: ${response.status}`);
+        if (contentType && contentType.includes('application/json')) {
+            const json = await response.json();
+            throw new Error(json.message || `HTTP error! status: ${response.status}`);
+        } else {
+            const text = await handleNonJsonResponse(response);
+            throw new Error(text);
+        }
     }
-    return json;
+
+    if (contentType && contentType.includes('application/json')) {
+        return response.json();
+    }
+    
+    throw new Error('Expected JSON response but received a different format.');
 };
 
 
